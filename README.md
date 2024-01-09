@@ -16,6 +16,7 @@ extensions like:
 * Spring Data JPA
 * Lombok
 * Validation
+* Security (authentication is basic in application.properties)
 * Mapstruct (added externally)
 
 I've created simple tree structure of the project, according 

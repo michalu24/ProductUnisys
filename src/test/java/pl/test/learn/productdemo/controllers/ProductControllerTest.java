@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.test.learn.productdemo.exceptions.NoSuchProductException;
 import pl.test.learn.productdemo.models.Product;
@@ -20,10 +21,12 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(ProductController.class)
+@WithMockUser
 class ProductControllerTest {
 
     private static final String URL = "/products";
@@ -113,6 +116,7 @@ class ProductControllerTest {
 
         // when // then
         mockMvc.perform(post(URL)
+                        .with(csrf().asHeader())
                         .content(body)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -122,6 +126,7 @@ class ProductControllerTest {
     public void shouldUpdateProduct() throws Exception, NoSuchProductException {
         //given // when // then
         mockMvc.perform(put(URL_ID, QUERY_ID)
+                        .with(csrf().asHeader())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productDTO1)))
                 .andExpect(status().isOk());
@@ -137,6 +142,7 @@ class ProductControllerTest {
 
         // when // then
         mockMvc.perform(put(URL_ID, QUERY_ID)
+                        .with(csrf().asHeader())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidProduct)))
                 .andExpect(status().isBadRequest());
@@ -145,7 +151,8 @@ class ProductControllerTest {
     @Test
     public void shouldDeleteProduct() throws Exception, NoSuchProductException {
         //given // when // then
-        mockMvc.perform(delete(URL_ID, QUERY_ID))
+        mockMvc.perform(delete(URL_ID, QUERY_ID)
+                        .with(csrf().asHeader()))
                 .andExpect(status().isOk());
 
         verify(productService, times(1)).deleteProductById(anyLong());
@@ -157,7 +164,7 @@ class ProductControllerTest {
         //given // when // then
         doThrow(NoSuchProductException.class).when(productService).deleteProductById(anyLong());
 
-        mockMvc.perform(delete(URL_ID, QUERY_ID))
+        mockMvc.perform(delete(URL_ID, QUERY_ID).with(csrf().asHeader()))
                 .andExpect(status().isBadRequest());
     }
 }
