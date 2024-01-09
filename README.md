@@ -49,4 +49,7 @@ Project allows end users to manage basic CRUD operations on Product entity.
 All endpoint are documented in OpenApi :
 ``ProductDemo-openapi.yaml``
 
+Project could be run locally with IDE (Intellij) or just by downloading
+jar ``ProductDemo-0.0.1-SNAPSHOT.jar`` and running it locally on machine.
 
+Project uses maven so to run test just run ``mvn test``
