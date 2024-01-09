@@ -19,7 +19,7 @@ public class ProductDTO implements Serializable {
     String description;
     @NotNull(message = "price property cannot be null")
     Double price;
-    @NotNull(message = "message property cannot be null")
+    @NotNull(message = "quantity property cannot be null")
     Integer quantity;
 
     @Override
